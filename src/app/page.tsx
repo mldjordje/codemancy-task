@@ -1,6 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { CSSProperties, useEffect, useMemo, useState } from "react";
+import {
+  AutoAwesomeRounded,
+  ShieldRounded,
+  TimelineRounded,
+} from "@mui/icons-material";
 import {
   Alert,
   Box,
@@ -77,6 +82,27 @@ const fetchSettings = async (): Promise<Settings> => {
 };
 
 const formatTime = (value: string) => new Date(value).toLocaleString();
+
+const delayStyle = (delayMs: number): CSSProperties =>
+  ({ ["--delay" as string]: `${delayMs}ms` } as CSSProperties);
+
+const heroHighlights = [
+  {
+    title: "Idempotent by design",
+    description: "Metafield guard blocks duplicate discounts across stages.",
+    icon: ShieldRounded,
+  },
+  {
+    title: "Flow plus API harmony",
+    description: "Shopify Flow orchestrates Recharge calls without custom app debt.",
+    icon: AutoAwesomeRounded,
+  },
+  {
+    title: "Audit-ready delivery",
+    description: "Runs, retries, and logs support operational visibility.",
+    icon: TimelineRounded,
+  },
+];
 
 export default function Home() {
   const [tab, setTab] = useState(0);
@@ -224,45 +250,88 @@ export default function Home() {
     <Box sx={{ minHeight: "100vh", py: { xs: 3, md: 5 } }}>
       <Container maxWidth="xl">
         <Stack spacing={3}>
-          <Paper
-            elevation={0}
-            sx={{
-              p: { xs: 3, md: 4 },
-              borderRadius: 4,
-              border: "1px solid rgba(20,90,122,0.15)",
-              background:
-                "linear-gradient(135deg, rgba(255,255,255,0.98), rgba(246,243,235,0.9))",
-            }}
-          >
-            <Stack spacing={2}>
-              <Stack
-                direction={{ xs: "column", md: "row" }}
-                justifyContent="space-between"
-                alignItems={{ xs: "flex-start", md: "center" }}
-                spacing={2}
-              >
-                <Box>
-                  <Typography variant="h2">Raffle Winner Automation Simulator</Typography>
-                  <Typography variant="subtitle1" color="text.secondary">
-                    A proof-of-concept Flow + Recharge automation showcase with idempotency,
-                    retries, audit logs, and multi-stage raffle execution.
-                  </Typography>
-                </Box>
-                <Stack direction="row" spacing={1} flexWrap="wrap">
-                  <Chip label="Shopify Flow trigger" variant="outlined" />
-                  <Chip label="Recharge API simulation" variant="outlined" />
-                  <Chip label="Observability built-in" variant="outlined" />
+          <Box className="hero-shell">
+            <Box className="hero-orb hero-orb--one" />
+            <Box className="hero-orb hero-orb--two" />
+            <Box className="hero-orb hero-orb--three" />
+            <Paper
+              elevation={0}
+              className="hero-panel"
+              sx={{
+                p: { xs: 3, md: 4 },
+                border: "1px solid rgba(20,90,122,0.15)",
+              }}
+            >
+              <Stack spacing={2}>
+                <Stack
+                  className="reveal"
+                  style={delayStyle(0)}
+                  direction={{ xs: "column", md: "row" }}
+                  justifyContent="space-between"
+                  alignItems={{ xs: "flex-start", md: "center" }}
+                  spacing={2}
+                >
+                  <Box>
+                    <Typography variant="h2">Raffle Winner Automation Simulator</Typography>
+                    <Typography variant="subtitle1" color="text.secondary">
+                      A proof-of-concept Flow + Recharge automation showcase with idempotency,
+                      retries, audit logs, and multi-stage raffle execution.
+                    </Typography>
+                  </Box>
+                  <Stack
+                    direction="row"
+                    spacing={1}
+                    flexWrap="wrap"
+                    className="reveal"
+                    style={delayStyle(120)}
+                  >
+                    <Chip label="Shopify Flow trigger" variant="outlined" />
+                    <Chip label="Recharge API simulation" variant="outlined" />
+                    <Chip label="Observability built-in" variant="outlined" />
+                  </Stack>
+                </Stack>
+                <Alert severity="info" variant="outlined" className="reveal" style={delayStyle(200)}>
+                  This simulator demonstrates the logic described in the provided PDFs. It focuses on
+                  realism over production hardening.
+                </Alert>
+                <Stack
+                  direction={{ xs: "column", md: "row" }}
+                  spacing={2}
+                  flexWrap="wrap"
+                >
+                  {heroHighlights.map((item, index) => {
+                    const Icon = item.icon;
+                    return (
+                      <Paper
+                        key={item.title}
+                        elevation={0}
+                        className="stat-card reveal"
+                        style={delayStyle(280 + index * 120)}
+                        sx={{ p: 2, borderRadius: 3, flex: 1, minWidth: 220 }}
+                      >
+                        <Stack direction="row" spacing={2} alignItems="flex-start">
+                          <Box className="stat-icon">
+                            <Icon fontSize="small" />
+                          </Box>
+                          <Box>
+                            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                              {item.title}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              {item.description}
+                            </Typography>
+                          </Box>
+                        </Stack>
+                      </Paper>
+                    );
+                  })}
                 </Stack>
               </Stack>
-              <Alert severity="info" variant="outlined">
-                This simulator demonstrates the logic described in the provided PDFs. It focuses on
-                realism over production hardening.
-              </Alert>
-            </Stack>
-          </Paper>
+            </Paper>
+          </Box>
 
-          <Paper elevation={0} sx={{ p: { xs: 2, md: 3 }, borderRadius: 4 }}>
-            <Tabs value={tab} onChange={(_, value) => setTab(value)}>
+          <Paper elevation={0} className="glass-panel" sx={{ p: { xs: 2, md: 3 }, borderRadius: 4 }}>
+            <Tabs value={tab} onChange={(_, value) => setTab(value)} className="reveal" style={delayStyle(240)}>
               <Tab label="Trigger" />
               <Tab label="Runs" />
               <Tab label="Failed / Needs Review" />
@@ -273,8 +342,15 @@ export default function Home() {
 
             {tab === 0 && (
               <Stack spacing={3}>
-                <Typography variant="h5">Simulate rafflewinner tag</Typography>
-                <Paper elevation={0} sx={{ p: 3, borderRadius: 3, border: "1px solid #eee" }}>
+                <Typography variant="h5" className="reveal" style={delayStyle(120)}>
+                  Simulate rafflewinner tag
+                </Typography>
+                <Paper
+                  elevation={0}
+                  className="glass-panel reveal"
+                  style={delayStyle(200)}
+                  sx={{ p: 3, borderRadius: 3, border: "1px solid #eee" }}
+                >
                   <Stack spacing={2}>
                     <TextField
                       label="Customer ID"
@@ -330,18 +406,27 @@ export default function Home() {
 
             {tab === 1 && (
               <Stack spacing={3}>
-                <Typography variant="h5">All runs</Typography>
+                <Typography variant="h5" className="reveal" style={delayStyle(120)}>
+                  All runs
+                </Typography>
                 {runsLoading ? (
                   <Typography color="text.secondary">Loading runs...</Typography>
                 ) : runRows.length === 0 ? (
                   <Typography color="text.secondary">No runs yet.</Typography>
                 ) : (
-                  <Paper elevation={0} sx={{ p: 2, borderRadius: 3, border: "1px solid #eee" }}>
+                  <Paper
+                    elevation={0}
+                    className="glass-panel reveal"
+                    style={delayStyle(200)}
+                    sx={{ p: 2, borderRadius: 3, border: "1px solid #eee" }}
+                  >
                     <Stack spacing={1}>
-                      {runRows.map((run) => (
+                      {runRows.map((run, index) => (
                         <Paper
                           key={run.runId}
                           variant="outlined"
+                          className="reveal"
+                          style={delayStyle(280 + Math.min(index, 6) * 60)}
                           sx={{ p: 2, borderRadius: 3 }}
                         >
                           <Stack
@@ -352,13 +437,13 @@ export default function Home() {
                           >
                             <Stack spacing={0.5}>
                               <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                                {run.customerId} • Stage {run.stage}
+                                {run.customerId} -> Stage {run.stage}
                               </Typography>
                               <Typography variant="body2" color="text.secondary">
                                 {run.email}
                               </Typography>
                               <Typography variant="caption" color="text.secondary">
-                                {formatTime(run.createdAt)} • {run.runId}
+                                {formatTime(run.createdAt)} -> {run.runId}
                               </Typography>
                             </Stack>
                             <Stack direction="row" spacing={1} alignItems="center">
@@ -375,16 +460,28 @@ export default function Home() {
                 )}
 
                 <Divider />
-                <Typography variant="h5">Audit log</Typography>
+                <Typography variant="h5" className="reveal" style={delayStyle(160)}>
+                  Audit log
+                </Typography>
                 {logs.length === 0 ? (
                   <Typography color="text.secondary">No audit entries yet.</Typography>
                 ) : (
-                  <Paper elevation={0} sx={{ p: 2, borderRadius: 3, border: "1px solid #eee" }}>
+                  <Paper
+                    elevation={0}
+                    className="glass-panel reveal"
+                    style={delayStyle(240)}
+                    sx={{ p: 2, borderRadius: 3, border: "1px solid #eee" }}
+                  >
                     <Stack spacing={1}>
-                      {logs.slice(0, 12).map((log) => (
-                        <Stack key={log.logId} spacing={0.5}>
+                      {logs.slice(0, 12).map((log, index) => (
+                        <Stack
+                          key={log.logId}
+                          spacing={0.5}
+                          className="reveal"
+                          style={delayStyle(300 + Math.min(index, 6) * 50)}
+                        >
                           <Typography variant="caption" color="text.secondary">
-                            {formatTime(log.createdAt)} • {log.type}
+                            {formatTime(log.createdAt)} -> {log.type}
                           </Typography>
                           <Typography variant="body2">{log.message}</Typography>
                           {log.runId ? (
@@ -403,16 +500,25 @@ export default function Home() {
 
             {tab === 2 && (
               <Stack spacing={3}>
-                <Typography variant="h5">Needs review</Typography>
+                <Typography variant="h5" className="reveal" style={delayStyle(120)}>
+                  Needs review
+                </Typography>
                 {needsReviewRuns.length === 0 ? (
                   <Typography color="text.secondary">No runs require review.</Typography>
                 ) : (
-                  <Paper elevation={0} sx={{ p: 2, borderRadius: 3, border: "1px solid #eee" }}>
+                  <Paper
+                    elevation={0}
+                    className="glass-panel reveal"
+                    style={delayStyle(200)}
+                    sx={{ p: 2, borderRadius: 3, border: "1px solid #eee" }}
+                  >
                     <Stack spacing={1}>
-                      {needsReviewRuns.map((run) => (
+                      {needsReviewRuns.map((run, index) => (
                         <Paper
                           key={run.runId}
                           variant="outlined"
+                          className="reveal"
+                          style={delayStyle(280 + Math.min(index, 6) * 60)}
                           sx={{ p: 2, borderRadius: 3 }}
                         >
                           <Stack
@@ -423,13 +529,13 @@ export default function Home() {
                           >
                             <Stack spacing={0.5}>
                               <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                                {run.customerId} • Stage {run.stage}
+                                {run.customerId} -> Stage {run.stage}
                               </Typography>
                               <Typography variant="body2" color="text.secondary">
                                 {run.email}
                               </Typography>
                               <Typography variant="caption" color="text.secondary">
-                                {formatTime(run.createdAt)} • {run.runId}
+                                {formatTime(run.createdAt)} -> {run.runId}
                               </Typography>
                             </Stack>
                             <Stack direction="row" spacing={1} alignItems="center">
@@ -461,8 +567,15 @@ export default function Home() {
 
             {tab === 3 && (
               <Stack spacing={3}>
-                <Typography variant="h5">Stage batch simulator</Typography>
-                <Paper elevation={0} sx={{ p: 3, borderRadius: 3, border: "1px solid #eee" }}>
+                <Typography variant="h5" className="reveal" style={delayStyle(120)}>
+                  Stage batch simulator
+                </Typography>
+                <Paper
+                  elevation={0}
+                  className="glass-panel reveal"
+                  style={delayStyle(200)}
+                  sx={{ p: 3, borderRadius: 3, border: "1px solid #eee" }}
+                >
                   <Stack spacing={2}>
                     <Controller
                       control={stageForm.control}
@@ -500,21 +613,33 @@ export default function Home() {
                   </Stack>
                 </Paper>
                 {stageResult ? (
-                  <Paper elevation={0} sx={{ p: 2, borderRadius: 3, border: "1px solid #eee" }}>
+                  <Paper
+                    elevation={0}
+                    className="glass-panel reveal"
+                    style={delayStyle(260)}
+                    sx={{ p: 2, borderRadius: 3, border: "1px solid #eee" }}
+                  >
                     <Stack spacing={1}>
                       <Typography variant="subtitle1">
-                        Stage {stageResult.stage} scheduled • {stageResult.count} winners
+                        Stage {stageResult.stage} scheduled -> {stageResult.count} winners
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        Throttle: {stageResult.throttleMs / 1000}s per customer • Started{" "}
+                        Throttle: {stageResult.throttleMs / 1000}s per customer -> Started{" "}
                         {formatTime(stageResult.startedAt)}
                       </Typography>
                       <Divider />
-                      {stageResult.runs.slice(0, 10).map((run) => (
-                        <Stack key={run.runId} direction="row" spacing={1} alignItems="center">
+                      {stageResult.runs.slice(0, 10).map((run, index) => (
+                        <Stack
+                          key={run.runId}
+                          direction="row"
+                          spacing={1}
+                          alignItems="center"
+                          className="reveal"
+                          style={delayStyle(320 + Math.min(index, 6) * 50)}
+                        >
                           <StatusChip status={run.status} />
                           <Typography variant="body2">
-                            {run.customerId} • Scheduled {formatTime(run.scheduledAt)}
+                            {run.customerId} -> Scheduled {formatTime(run.scheduledAt)}
                           </Typography>
                         </Stack>
                       ))}
@@ -526,12 +651,24 @@ export default function Home() {
 
             {tab === 4 && (
               <Stack spacing={3}>
-                <Typography variant="h5">Settings & policy engine</Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="h5" className="reveal" style={delayStyle(120)}>
+                  Settings & policy engine
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  className="reveal"
+                  style={delayStyle(160)}
+                >
                   These settings clarify merchant intent and drive the automation behavior in real
                   time.
                 </Typography>
-                <Paper elevation={0} sx={{ p: 3, borderRadius: 3, border: "1px solid #eee" }}>
+                <Paper
+                  elevation={0}
+                  className="glass-panel reveal"
+                  style={delayStyle(220)}
+                  sx={{ p: 3, borderRadius: 3, border: "1px solid #eee" }}
+                >
                   <Stack spacing={2}>
                     <FormControl>
                       <FormLabel>Apply discount to</FormLabel>
@@ -621,3 +758,5 @@ export default function Home() {
     </Box>
   );
 }
+
+
