@@ -550,13 +550,16 @@ export default function Home() {
                           >
                             <Stack spacing={0.5}>
                               <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                                {run.customerId} -> Stage {run.stage}
+                                {run.customerId}
+                                {" -> "}Stage {run.stage}
                               </Typography>
                               <Typography variant="body2" color="text.secondary">
                                 {run.email}
                               </Typography>
                               <Typography variant="caption" color="text.secondary">
-                                {formatTime(run.createdAt)} -> {run.runId}
+                                {formatTime(run.createdAt)}
+                                {" -> "}
+                                {run.runId}
                               </Typography>
                             </Stack>
                             <Stack direction="row" spacing={1} alignItems="center">
@@ -594,7 +597,9 @@ export default function Home() {
                           style={delayStyle(300 + Math.min(index, 6) * 50)}
                         >
                           <Typography variant="caption" color="text.secondary">
-                            {formatTime(log.createdAt)} -> {log.type}
+                            {formatTime(log.createdAt)}
+                            {" -> "}
+                            {log.type}
                           </Typography>
                           <Typography variant="body2">{log.message}</Typography>
                           {log.runId ? (
@@ -642,13 +647,16 @@ export default function Home() {
                           >
                             <Stack spacing={0.5}>
                               <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                                {run.customerId} -> Stage {run.stage}
+                                {run.customerId}
+                                {" -> "}Stage {run.stage}
                               </Typography>
                               <Typography variant="body2" color="text.secondary">
                                 {run.email}
                               </Typography>
                               <Typography variant="caption" color="text.secondary">
-                                {formatTime(run.createdAt)} -> {run.runId}
+                                {formatTime(run.createdAt)}
+                                {" -> "}
+                                {run.runId}
                               </Typography>
                             </Stack>
                             <Stack direction="row" spacing={1} alignItems="center">
@@ -734,11 +742,14 @@ export default function Home() {
                   >
                     <Stack spacing={1}>
                       <Typography variant="subtitle1">
-                        Stage {stageResult.stage} scheduled -> {stageResult.count} winners
+                        Stage {stageResult.stage} scheduled
+                        {" -> "}
+                        {stageResult.count} winners
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        Throttle: {stageResult.throttleMs / 1000}s per customer -> Started{" "}
-                        {formatTime(stageResult.startedAt)}
+                        Throttle: {stageResult.throttleMs / 1000}s per customer
+                        {" -> "}
+                        Started {formatTime(stageResult.startedAt)}
                       </Typography>
                       <Divider />
                       {stageResult.runs.slice(0, 10).map((run, index) => (
@@ -752,7 +763,9 @@ export default function Home() {
                         >
                           <StatusChip status={run.status} />
                           <Typography variant="body2">
-                            {run.customerId} -> Scheduled {formatTime(run.scheduledAt)}
+                            {run.customerId}
+                            {" -> "}
+                            Scheduled {formatTime(run.scheduledAt)}
                           </Typography>
                         </Stack>
                       ))}
