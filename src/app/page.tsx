@@ -108,6 +108,7 @@ export default function Home() {
   const [tab, setTab] = useState(0);
   const [selectedRun, setSelectedRun] = useState<FlowRun | null>(null);
   const [stageResult, setStageResult] = useState<StageSimulationResult | null>(null);
+  const [demoMode, setDemoMode] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: runs = [], isLoading: runsLoading } = useQuery({
@@ -164,15 +165,15 @@ export default function Home() {
     }
   }, [settings, settingsForm]);
 
-  const triggerMutation = useMutation({
-    mutationFn: async (payload: FlowInput) => {
-      const response = await fetch("/api/flow/rafflewinner", {
+  const retryMutation = useMutation({
+    mutationFn: async (runId: string) => {
+      const response = await fetch(`/api/runs/${runId}/retry`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({}),
       });
       if (!response.ok) {
-        throw new Error("Trigger failed");
+        throw new Error("Retry failed");
       }
       return response.json();
     },
@@ -183,15 +184,15 @@ export default function Home() {
     },
   });
 
-  const retryMutation = useMutation({
-    mutationFn: async (runId: string) => {
-      const response = await fetch(`/api/runs/${runId}/retry`, {
+  const triggerMutation = useMutation({
+    mutationFn: async (payload: FlowInput) => {
+      const response = await fetch("/api/flow/rafflewinner", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({}),
+        body: JSON.stringify(payload),
       });
       if (!response.ok) {
-        throw new Error("Retry failed");
+        throw new Error("Trigger failed");
       }
       return response.json();
     },
@@ -245,6 +246,38 @@ export default function Home() {
   );
 
   const needsReviewRuns = runRows.filter((run) => run.status === "needs_review");
+  const demoSettings: Settings = {
+    applyTo: "active_and_paused",
+    existingDiscount: "override",
+    discountPercent: 10,
+    durationDays: 60,
+    applyToFutureSubscriptions: true,
+  };
+
+  const runDemoTrigger = (payload: FlowInput, nextTab?: number) => {
+    triggerForm.reset(payload);
+    triggerMutation.mutate(payload);
+    if (typeof nextTab === "number") {
+      setTab(nextTab);
+    }
+  };
+
+  const runDemoStageBatch = (nextTab?: number) => {
+    const payload: StageSimulationInput = { stage: 2, count: 12 };
+    stageForm.reset(payload);
+    stageMutation.mutate(payload);
+    if (typeof nextTab === "number") {
+      setTab(nextTab);
+    }
+  };
+
+  const applyDemoSettings = (nextTab?: number) => {
+    settingsForm.reset(demoSettings);
+    settingsMutation.mutate(demoSettings);
+    if (typeof nextTab === "number") {
+      setTab(nextTab);
+    }
+  };
 
   return (
     <Box sx={{ minHeight: "100vh", py: { xs: 3, md: 5 } }}>
@@ -326,6 +359,86 @@ export default function Home() {
                     );
                   })}
                 </Stack>
+                <Paper
+                  elevation={0}
+                  className="glass-panel reveal"
+                  style={delayStyle(520)}
+                  sx={{ p: 2.5, borderRadius: 3 }}
+                >
+                  <Stack spacing={2}>
+                    <Stack
+                      direction={{ xs: "column", md: "row" }}
+                      justifyContent="space-between"
+                      alignItems={{ xs: "flex-start", md: "center" }}
+                      spacing={1}
+                    >
+                      <Box>
+                        <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                          Demo mode
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          One-click scenarios for a confident walkthrough.
+                        </Typography>
+                      </Box>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={demoMode}
+                            onChange={(_, checked) => setDemoMode(checked)}
+                          />
+                        }
+                        label={demoMode ? "On" : "Off"}
+                      />
+                    </Stack>
+                    {demoMode ? (
+                      <Stack direction={{ xs: "column", md: "row" }} spacing={2} flexWrap="wrap">
+                        <Button
+                          variant="contained"
+                          onClick={() =>
+                            runDemoTrigger(
+                              {
+                                customerId: "cust_demo_4021",
+                                email: "winner@raffle.demo",
+                                stage: 1,
+                                forceFail: false,
+                              },
+                              1
+                            )
+                          }
+                        >
+                          Run happy path
+                        </Button>
+                        <Button
+                          variant="outlined"
+                          color="warning"
+                          onClick={() =>
+                            runDemoTrigger(
+                              {
+                                customerId: "cust_demo_4512",
+                                email: "review@raffle.demo",
+                                stage: 2,
+                                forceFail: true,
+                              },
+                              2
+                            )
+                          }
+                        >
+                          Force failure
+                        </Button>
+                        <Button variant="outlined" onClick={() => runDemoStageBatch(3)}>
+                          Stage batch
+                        </Button>
+                        <Button
+                          variant="outlined"
+                          color="secondary"
+                          onClick={() => applyDemoSettings(4)}
+                        >
+                          Apply demo settings
+                        </Button>
+                      </Stack>
+                    ) : null}
+                  </Stack>
+                </Paper>
               </Stack>
             </Paper>
           </Box>
